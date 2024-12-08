@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { FaDiscord, FaGithub } from "react-icons/fa"
 import { LuBook } from "react-icons/lu"
-
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -26,7 +25,7 @@ export default function HomePage() {
           height={80}
           className="h-20 w-20 rounded-2xl"
         />
-        <PageHeaderHeading>Build Web3 in Turbo&nbsp;Mode</PageHeaderHeading>
+        <PageHeaderHeading>frens.bet</PageHeaderHeading>
         <PageHeaderDescription>{siteConfig.description}</PageHeaderDescription>
         <PageHeaderCTA>
           <Link
