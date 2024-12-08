@@ -2,11 +2,6 @@
 
 import React from "react"
 import Link from "next/link"
-import {
-  integrationCategories,
-  turboIntegrations,
-} from "@/data/turbo-integrations"
-
 import { siteConfig } from "@/config/site"
 import {
   NavigationMenu,
@@ -17,10 +12,9 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Separator } from "@/components/ui/separator"
 import { LightDarkImage } from "@/components/shared/light-dark-image"
-
 import { LinkComponent } from "../shared/link-component"
+import { WalletConnect } from "@/components/blockchain/wallet-connect"
 
 export function MainNav() {
   return (
@@ -29,7 +23,7 @@ export function MainNav() {
         <LightDarkImage
           LightImage="/logo-dark.png"
           DarkImage="/logo-light.png"
-          alt="TurboETH"
+          alt="frens.bet"
           className="rounded-full"
           height={32}
           width={32}
@@ -41,6 +35,9 @@ export function MainNav() {
       <nav className="flex items-center space-x-6 text-base font-medium">
         <MainNavMenu />
       </nav>
+      <div className="ml-auto">
+        <WalletConnect />
+      </div>
     </div>
   )
 }
@@ -50,39 +47,68 @@ function MainNavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Integrations</NavigationMenuTrigger>
-          <NavigationMenuContent className="max-h-[768px] overflow-y-scroll">
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[768px] lg:grid-cols-3">
-              {integrationCategories.map((category) => (
-                <>
-                  <h4
-                    key={category}
-                    className="text-lg font-medium leading-none md:col-span-2 lg:col-span-3"
-                  >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </h4>
-                  <Separator className="md:col-span-2 lg:col-span-3" />
-                  {Object.values(turboIntegrations)
-                    .filter((integration) => integration.category === category)
-                    .map(({ name, href, description, imgDark, imgLight }) => (
-                      <NavMenuListItem
-                        key={name}
-                        name={name}
-                        href={href}
-                        description={description}
-                        lightImage={imgDark}
-                        darkImage={imgLight}
-                      />
-                    ))}
-                </>
-              ))}
+          <NavigationMenuTrigger>Explore</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+              <NavMenuListItem 
+                name="Projects" 
+                href="/explore/projects" 
+                description="Discover new and trending projects"
+                iconLight="/icons/projects-light.svg"
+                iconDark="/icons/projects-dark.svg"
+              />
+              <NavMenuListItem 
+                name="Trending" 
+                href="/explore/trending" 
+                description="Most popular and active communities"
+                iconLight="/icons/trending-light.svg"
+                iconDark="/icons/trending-dark.svg"
+              />
+              <NavMenuListItem 
+                name="Categories" 
+                href="/explore/categories" 
+                description="Browse projects by category"
+                iconLight="/icons/categories-light.svg"
+                iconDark="/icons/categories-dark.svg"
+              />
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+        
         <NavigationMenuItem>
-          <LinkComponent href="https://docs.turboeth.xyz/overview">
+          <LinkComponent href="/ranks">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <span>Documentation</span>
+              <span>Ranks</span>
+            </NavigationMenuLink>
+          </LinkComponent>
+        </NavigationMenuItem>
+        
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Activities</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+              <NavMenuListItem 
+                name="Recent" 
+                href="/activities/recent" 
+                description="Latest community activities"
+                iconLight="/icons/recent-light.svg"
+                iconDark="/icons/recent-dark.svg"
+              />
+              <NavMenuListItem 
+                name="Your Feed" 
+                href="/activities/feed" 
+                description="Personalized activity stream"
+                iconLight="/icons/feed-light.svg"
+                iconDark="/icons/feed-dark.svg"
+              />
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        
+        <NavigationMenuItem>
+          <LinkComponent href="/notifications">
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <span>Notifications</span>
             </NavigationMenuLink>
           </LinkComponent>
         </NavigationMenuItem>
@@ -95,16 +121,16 @@ interface NavMenuListItemProps {
   name: string
   description: string
   href: string
-  lightImage: string
-  darkImage: string
+  iconLight: string
+  iconDark: string
 }
 
 const NavMenuListItem = ({
   name,
   description,
   href,
-  lightImage,
-  darkImage,
+  iconLight,
+  iconDark,
 }: NavMenuListItemProps) => {
   return (
     <li className="w-full min-w-full" key={name}>
@@ -115,8 +141,8 @@ const NavMenuListItem = ({
         >
           <div className="flex items-center gap-x-2">
             <LightDarkImage
-              LightImage={lightImage}
-              DarkImage={darkImage}
+              LightImage={iconLight}
+              DarkImage={iconDark}
               alt="icon"
               height={24}
               width={24}
@@ -132,3 +158,5 @@ const NavMenuListItem = ({
     </li>
   )
 }
+
+export default MainNav

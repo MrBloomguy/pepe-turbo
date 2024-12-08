@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { WalletConnect } from "@/components/blockchain/wallet-connect"
 import { LightDarkImage } from "@/components/shared/light-dark-image"
 
 import { ModeToggle } from "../shared/mode-toggle"
@@ -74,6 +75,7 @@ export function MobileNav() {
         </div>
         <ScrollArea className="my-4 mr-4 h-[calc(100vh-8rem)] pb-10">
           <div className="flex flex-col space-y-4">
+            <WalletConnect />
             <Accordion type="single" collapsible className="mx-auto w-full">
               <AccordionItem value="integrations">
                 <AccordionTrigger className="text-base font-medium">
@@ -134,13 +136,7 @@ export function MobileNav() {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-            <Link
-              href="https://docs.turboeth.xyz/overview"
-              className="font-medium"
-            >
-              Documentation
-            </Link>
-            <Separator />
+            <WalletConnect />
           </div>
         </ScrollArea>
       </SheetContent>
