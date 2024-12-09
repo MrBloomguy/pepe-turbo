@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import styles from "../styles/Activities.module.css"
+import styles from "./styles/Activities.module.css";
 
 export default function Activities() {
   const [activeProfile, setActiveProfile] = useState(null)
