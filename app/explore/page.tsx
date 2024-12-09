@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import Link, { LinkProps } from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -12,7 +13,6 @@ import { LuMenu } from "react-icons/lu"
 import { menuDashboard } from "@/config/menu-dashboard"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import React, { useState, useCallback, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { 
@@ -34,9 +34,9 @@ import {
 } from 'lucide-react';
 
 // Components
-import Notification from '../components/Notification';
-import PostEngagement from '../components/PostEngagement';
-import CommentSection from '../components/CommentSection';
+import Notification from '@/components/CommentSection';
+import PostEngagement from '@/components/PostEngagement';
+import CommentSection from '@/components/CommentSection';
 
 // Styles
 import styles from '../styles/Explore.module.css';
@@ -147,9 +147,8 @@ const challengePosts = {
   ]
 };
 
-// Add these helper functions for time handling
-const getTimeRemaining = (endTime) => {
-  const total = Date.parse(endTime) - Date.parse(new Date());
+const getTimeRemaining = (endTime: string | Date) => {
+  const total = Date.parse(endTime.toString()) - Date.parse(new Date().toString());
   const days = Math.floor(total / (1000 * 60 * 60 * 24));
   const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((total / (1000 * 60)) % 60);
@@ -159,23 +158,28 @@ const getTimeRemaining = (endTime) => {
   return `${minutes}m left`;
 };
 
-const formatChallengeDuration = (duration) => {
+const formatChallengeDuration = (duration: string): Date => {
   const now = new Date();
   const end = new Date(now);
-  
+
+  const value = parseInt(duration);
+
   if (duration.includes('month')) {
-    end.setMonth(end.getMonth() + parseInt(duration));
+    end.setMonth(end.getMonth() + value);
   } else if (duration.includes('week')) {
-    end.setDate(end.getDate() + (parseInt(duration) * 7));
+    end.setDate(end.getDate() + (value * 7));
   } else if (duration.includes('day')) {
-    end.setDate(end.getDate() + parseInt(duration));
+    end.setDate(end.getDate() + value);
   }
+
+  return end;
+};
   
   return end.toISOString();
 };
 
 // Add helper function for username colors
-const getUsernameColor = (username) => {
+const getUsernameColor = (username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.PromiseLikeOfReactNode | Iterable<React.ReactNode> | null | undefined) => {
   const colors = [
     '#FF6B00', // orange
     '#4ADE80', // green
@@ -185,12 +189,12 @@ const getUsernameColor = (username) => {
     '#F59E0B', // amber
     '#10B981', // emerald
   ];
-  const index = username.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const index = username.split('').reduce((acc: any, char: string) => acc + char.charCodeAt(0), 0);
   return colors[index % colors.length];
 };
 
 // Add this hook for live timer updates
-const useCountdown =(endTime) => {
+const useCountdown =(endTime: string | Date) => {
   const [timeLeft, setTimeLeft] = useState(getTimeRemaining(endTime));
 
   useEffect(() => {
@@ -223,7 +227,7 @@ const TimerDisplay = ({ endTime }) => {
 
     // Play sound when less than 1 hour remains
     if (total <= 3600000 && total > 3595000 && timerSound) {
-      timerSound.play().catch(err => console.log('Audio play failed:', err));
+      timerSound.play().catch((err: any) => console.log('Audio play failed:', err));
     }
   }, [timeLeft, timerSound]);
 
@@ -245,7 +249,7 @@ const TimerDisplay = ({ endTime }) => {
   );
 };
 
-const renderChallengeItem = (item) => {
+const renderChallengeItem = (item: { author: { username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }; target: { username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }; prediction: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; status: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.PromiseLikeOfReactNode | null | undefined; isHot: any; result: { winner: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }; wager: { amount: number; currency: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }; timestamp: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined }) => {
   const authorColor = getUsernameColor(item.author.username);
   const targetColor = getUsernameColor(item.target.username);
 
@@ -409,7 +413,7 @@ export default function ExplorePage() {
     { username: 'sol_sage', name: 'SolanaSage', isVerified: true },
   ];
 
-  const isChallenge = (text) => {
+  const isChallenge = (text: string) => {
     const commandPattern = /^(\/|\/pepe|\/pepebot|@pepe|@pepebot)/i;
     return commandPattern.test(text.trim());
   };
@@ -421,7 +425,7 @@ export default function ExplorePage() {
     return isChallenge(content) ? "Challenge" : "Post event";
   };
 
-  const handleContentChange = (e) => {
+  const handleContentChange = (e: { target: { value: any } }) => {
     const newContent = e.target.value;
     setContent(newContent);
 
@@ -439,7 +443,7 @@ export default function ExplorePage() {
     }
   };
 
-  const handleUserSelect = (username) => {
+  const handleUserSelect = (username: string) => {
     const beforeAt = content.slice(0, content.lastIndexOf('@'));
     const challengeTemplate = `${beforeAt}@${username}:
 Event: 
@@ -523,14 +527,14 @@ Wager: ETH`;
   };
 
   // Add helper function to parse challenge content
-  const parseChallenge = (content) => {
+  const parseChallenge = (content: string) => {
     // Basic parsing - you might want to make this more robust
     const lines = content.split('\n');
     return {
       target: lines[0].split('@')[2]?.split(':')[0] || '',
-      event: lines.find(l => l.startsWith('Event:'))?.replace('Event:', '').trim() || '',
-      amount: parseInt(lines.find(l => l.startsWith('Wager:'))?.split(' ')[1] || '0'),
-      currency: lines.find(l => l.startsWith('Wager:'))?.split(' ')[2] || 'ETH'
+      event: lines.find((l: string) => l.startsWith('Event:'))?.replace('Event:', '').trim() || '',
+      amount: parseInt(lines.find((l: string) => l.startsWith('Wager:'))?.split(' ')[1] || '0'),
+      currency: lines.find((l: string) => l.startsWith('Wager:'))?.split(' ')[2] || 'ETH'
     };
   };
 
@@ -602,7 +606,7 @@ Wager: ETH`;
     }
   }, [isConnected, setNotification]);
 
-  const handleAddComment = async (postId, comment) => {
+  const handleAddComment = async (postId: number, comment: any) => {
     if (!isConnected) {
       setNotification({
         type: 'warning',
@@ -648,7 +652,7 @@ Wager: ETH`;
     }
   };
 
-  const renderPost = useCallback((post) => {
+  const renderPost = useCallback((post: { author: { username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; avatar: string | undefined }; timestamp: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; content: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; comments: string | any[]; id: any; engagement: { shares: any; likes: any }; liked: any }) => {
     const authorColor = getUsernameColor(post.author.username);
     
     return (
@@ -830,7 +834,7 @@ Use "/challenge @username" to create a new challenge`}
                   {renderPost(item)}
                 </div>
               ))
-            : challengePosts[activeTab]?.map(item => renderChallengeItem(item))
+            : challengePosts[activeTab]?.map((item: any) => renderChallengeItem(item))
           }
         </div>
       </div>
